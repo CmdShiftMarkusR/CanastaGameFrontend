@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Canasta Game</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #102b24;
+            color: #fff8e7;
+        }
+
+        button {
+            font: inherit;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        /*--------------------LOGIN-SCREEN----------------*/
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-box {
+            width: min(400px, 100%);
+            padding: 40px;
+            text-align: center;
+            background: #091d18;
+            border: 1px solid #b99a52;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-title {
+            margin: 0 0 10px;
+            color: #e6c778;
+            font-family: Georgia, serif;
+            font-size: 32px;
+            letter-spacing: 2px;
+        }
+
+        .login-description {
+            margin-bottom: 25px;
+            color: #b8c9be;
+            font-size: 14px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 15px;
+            border: 1px solid #b99a52;
+            border-radius: 7px;
+            background: #102b24;
+            color: #fff8e7;
+            font-size: 16px;
+        }
+
+        .login-input:focus {
+            outline: 2px solid #e6c778;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 13px;
+            margin-botton: 15px;
+            border: none;
+            border-radius: 25px;
+            background: #e6c778;
+            color: #17392a;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .login-button:hover {
+            background: #f5dfa0;
+        }
+
+        .login-error {
+            color: #ffaaaa;
+            font-size: 14px;
+        }
+
+        /*--------------------GAME-SCREEN----------------*/
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 35px;
+            background: #091d18;
+            border-bottom: 1px solid #b99a52;
+        }
+
+        .game-title {
+            margin: 0;
+            color: #e6c778;
+            font-family: Georgia, serif;
+            font-size: 28px;
+            letter-spacing: 2px;
+        }
+
+        .game-subtitle {
+            margin: 5px 0 0;
+            color: #b8c9be;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .game-status {
+            display: inline-block;
+            padding: 8px 18px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #ffff;
+            font-weight: 600;
+        }
+
+        .game-table {
+            width: 85%;
+            min-height: 750px;
+            margin: 30px auto;
+            padding: 28px 28px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 15px;
+            background: radial-gradient(ellipse at center, #26714d 0%, #14563a 60%, #10432f 100%);
+            border: 5px solid #73552e;
+            border-radius: 80px;
+            box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.25),
+            0 18px 40px rgba(0, 0, 0, 0.35);
+        }
+
+        .player-area {
+            text-align: center;
+        }
+
+        .player-name {
+            margin: 0 0 12px;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .player-label {
+            display: inline-block;
+            margin-left: 7px;
+            padding: 4px 8px;
+            border-radius: 10px;
+            background: rgba(230, 199, 120, 0.15);
+            color: #e6c778;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .opponent-hand img {
+            width: 58px;
+            height: auto;
+            margin-left: -20px;
+            border-radius: 5px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .piles-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 70px;
+            padding: 10px;
+            transform: translateY(25px);
+        }
+
+        .pile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pile-label {
+            color: #e5d8b6;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .pile img {
+            width: 95px;
+            height: auto;
+            border-radius: 7px;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+        }
+
+        .pile-count {
+            color: #c6d9cb;
+            font-size: 12px;
+        }
+
+        #meld-button {
+            background-color: #3f7d45;
+            border: 1px solid #5b9b61;
+            color: white
+        }
+
+        #meld-button:hover {
+            background-color: #519653;
+        }
+
+        #discard-button {
+            background-color: #963f56;
+            border: 1px solid #b85b62;
+            color: white;
+        }
+
+        #discard-button:hover {
+            background-color: #b34d55;
+        }
+
+        .card-hand {
+            --card-width: 90px;
+            position: absolute;
+            inset: 0;
+            overflow: visible;
+            pointer-events: none;
+        }
+
+        .card-hand img {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+
+            width: var(--card-width);
+            height: auto;
+
+            transform-origin: center bottom;
+            pointer-events: auto;
+            cursor: pointer;
+
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease,
+            box-shadow 0.2s ease;
+        }
+
+        .card-hand img:first-child {
+            margin-left: 0;
+        }
+
+        .card-hand img:hover {
+            filter: brightness(0.8);
+            z-index: 20;
+        }
+
+        .card-hand img.selected {
+            box-shadow: 0 0 0 2px #ff6a00;
+        }
+
+        .card-hand img.dragging {
+            opacity: 0.5;
+            cursor: grabbing
+        }
+
+        .hand-area {
+            position: relative;
+            width: 100%;
+            min-height: 280px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .table-middle {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            align-items: center;
+            gap: 20px;
+            flex: 1;
+            min-height: 350px;
+            padding: 20px 0;
+        }
+
+        .meld-area {
+            min-width: 0;
+            min-height: 300px;
+            padding: 12px;
+            border: 1px solid rgba(230, 199, 120, 0.3);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.10);
+            transform: translateY(5px);
+        }
+
+        .meld-area-title {
+            font-size: 15px;
+            color: #e6c778;
+            margin: 0 0 15px;
+        }
+
+        .meld-groups {
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .meld-group img {
+            width: 48px;
+            height: auto;
+            margin-left: -35px;
+            border-radius: 4px;
+        }
+
+        .meld-group.selected-meld {
+            outline: 2px solid #e6c778;
+            outline-offset: 4px;
+            border-radius: 6px;
+        }
+
+        .meld-group img:first-child {
+            margin-left: 0;
+        }
+
+        .table-middle .piles-area {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            padding: 10px;
+        }
+
+
+        /*-------------- GAME CONTROL --------------*/
+        .game-controls {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            width: max-content;
+            max-width: 100%;
+            z-index: 30;
+        }
+
+        .game-button {
+            padding: 12px 24px;
+            border: 1px solid #e6c778;
+            border-radius: 25px;
+            background: #e6c778;
+            color: #17392a;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s ease,
+            transform 0.2s ease;
+        }
+
+        .game-button:hover {
+            background: #f5dfa0;
+            transform: translateY(-2px);
+        }
+
+        .game-button.secondary {
+            background: transparent;
+            color: #fff8e7;
+            border-color: rgba(255, 248, 231, 0.6);
+        }
+
+        .game-button.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+
+
+</head>
+<body>
+
+<section class="login-screen" id="login-screen">
+
+    <!-- Step 1: Enter the shared password -->
+    <form class="login-box" id="login-form">
+        <h1 class="login-title">CANASTA</h1>
+        <p class="login-description">Passwort eingeben</p>
+
+        <input
+                autocomplete="current-password"
+                class="login-input"
+                id="access-password"
+                placeholder="Shared password"
+                required
+                type="password"
+        >
+        <p class="login-error" hidden id="login-error" role="alert"></p>
+
+        <button class="login-button" id="login-button" type="submit">
+            Weiter
+        </button>
+    </form>
+
+    <!-- Step 2: Create or join a game -->
+    <div class="login-box" hidden id="room-selection">
+        <h1 class="login-title">CANASTA</h1>
+        <p class="login-description">Erstelle ein neues Spiel oder einem bestehendem Spiel beitreten</p>
+
+        <button class="login-button" id="create-game-button" type="button">
+            Spiel erstellen
+        </button>
+
+        <p class="login-description">Oder Spielcode eingeben:</p>
+
+        <form id="join-game-form">
+            <input
+                    class="login-input"
+                    id="game-code-input"
+                    maxlength="15"
+                    placeholder="Gamecode"
+                    required
+                    type="text"
+            >
+
+            <button class="login-button" id="join-game-button" type="submit">
+                Spiel beitreten
+            </button>
+        </form>
+
+        <p class="login-error" hidden id="room-error" role="alert"></p>
+    </div>
+
+</section>
+
+<div hidden id="game-screen">
+    <header class="game-header">
+        <header class="game-screen" hidden></header>
+        <div>
+            <h1 class="game-title">CANASTA</h1>
+            <p class="game-subtitle">Das verrückte Kartenspiel</p>
+        </div>
+        <div class="game-status" id="turn-indicator">
+            Current turn: Player 1
+        </div>
+
+        <button class="game-button" id="new-game-button" type="button">
+            Neues Spiel starten
+        </button>
+    </header>
+
+    <main class="game-table">
+        <section class="player-area">
+            <div class="opponent-hand" id="opponent-hand">
+            </div>
+        </section>
+
+        <section class="table-middle">
+            <div class="meld-area opponent-meld-area">
+                <h3 class="meld-area-title">Gegner Auslage</h3>
+                <div class="meld-groups" id="opponent-melds">
+
+                </div>
+            </div>
+
+            <div class="piles-area">
+                <div class="pile">
+                    <span class="pile-label">Talon</span>
+                    <img
+                            alt="Stock pile"
+                            id="stock-pile"
+                            src="./assets/cards/CARD_BACK.svg"
+                            style="cursor: pointer;"
+                    >
+                    <span class="pile-count" id="stock-count"></span>
+                </div>
+
+                <div class="pile">
+                    <span class="pile-label">Poso</span>
+                    <img
+                            alt="Discard pile"
+                            id="discard-posso"
+                            src=""
+                    >
+                    <span class="pile-count" id="discard-count">XXXX cards</span>
+                </div>
+            </div>
+
+            <div class="meld-area player-meld-area">
+                <h3 class="meld-area-title">Deine Auslage</h3>
+                <div class="meld-groups" id="player-melds">
+
+                </div>
+            </div>
+        </section>
+
+        <section class="player-area">
+            <h2 class="player-name">
+                Deine Hand
+                <span class="player-label">Du</span>
+            </h2>
+            <div class="hand-area">
+                <div class="card-hand" id="card-container">
+
+
+                    <!-- JAVA SCRIPT -->
+                    <!-- Sollte man CSS in eine extra Datei schreiben, anstatt in die HTML? -->
+
+
+                </div>
+                <div class="game-controls">
+                    <button class="game-button" id="meld-button" type="button">
+                        Karten auslegen
+                    </button>
+
+                    <button class="game-button secondary" id="take-back-button" type="button">
+                        Auslage zurücknehmen
+                    </button>
+
+                    <button class="game-button secondary" id="discard-button" type="button">
+                        Ausgewählte Karte ablegen
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="js/main.js" type="module"></script>
+</body>
+</html>

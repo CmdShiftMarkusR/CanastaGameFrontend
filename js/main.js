@@ -360,6 +360,11 @@ meldButton.addEventListener("click", async () => {
     // Get the IDs of the selected cards
     const cardIds = selectedCards.map(card => card.id);
 
+    // Remeber the order of the cards that will remain in our hand
+    const remainingCards= playerHand.filter(
+        card => !cardIds.includes(card.id)
+    );
+
     // Create a new meld or add cards to an existing meld
     const gameState = await createMeld(cardIds, selectedMeldIndex);
 
@@ -367,8 +372,8 @@ meldButton.addEventListener("click", async () => {
         return;
     }
 
-    // Update our hand
-    playerHand = [...gameState.hand];
+    // Preserve our manually sorted order
+    playerHand = remainingCards;
 
     displayHand(playerHand, cardContainer);
 
@@ -403,8 +408,18 @@ takeBackButton.addEventListener("click", async () => {
         return;
     }
 
-    // Update our hand
-    playerHand = [...gameState.hand];
+    // Remember the cards already in our hand
+    const existingCards = [...playerHand];
+
+    // Find the cards returned by the backend
+    const existingIds = existingCards.map(card => card.id);
+
+    const returnedCards = gameState.hand.filter(
+        card => !existingIds.includes(card.id)
+    );
+
+    // Keep the existing order and append the returned cards
+    playerHand = [...existingCards, ...returnedCards];
 
     displayHand(playerHand, cardContainer);
 

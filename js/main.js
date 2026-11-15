@@ -11,6 +11,7 @@ import {
     getSelectedCards,
     joinGame,
     setCredentials,
+    startNewGame,
     takeBackMeld
 } from "./app.js";
 
@@ -37,6 +38,7 @@ const playerMeldsContainer = document.getElementById("player-melds");
 const opponentMeldsContainer = document.getElementById("opponent-melds");
 const meldButton = document.getElementById("meld-button");
 const takeBackButton = document.getElementById("take-back-button");
+const newGameButton = document.getElementById("new-game-button");
 
 let currentPlayerNumber = null;
 let playerHand = [];
@@ -52,7 +54,7 @@ loginForm.addEventListener("submit", async (e) => {
     setCredentials(password);
 
     loginButton.disabled = true;
-    loginButton.textContent = "Überprüfe Passowort...";
+    loginButton.textContent = "Überprüfe Passwort...";
     loginError.hidden = true;
 
     const validCredentials = await checkCredentials();
@@ -414,6 +416,45 @@ takeBackButton.addEventListener("click", async () => {
     selectedMeldIndex = null;
 
     console.log("Meld taken back successfully!")
+})
+
+newGameButton.addEventListener("click", async () => {
+
+    const confirmed = confirm("Willst du ein neues Spiel starten? Das aktuelle Spiel wird zurückgesetzt.");
+
+    if (!confirmed) {
+        return;
+    }
+
+    newGameButton.disabled = true;
+
+    const gameState = await startNewGame();
+
+    if (!gameState) {
+        alert("Could not start a new game.");
+        newGameButton.disabled = false;
+        return;
+    }
+
+    // Update the game state
+    currentGameState = gameState;
+
+    // Update our new hand
+    playerHand = [...gameState.hand];
+    displayHand(playerHand, cardContainer);
+
+    // Reset the selected meld
+    selectedMeldIndex = null;
+
+    // Update the other game elements
+    stockCount.textContent = `${gameState.stockSize} Karten`;
+    updateDiscardPile(gameState);
+    updateTurnIndicator(gameState);
+    displayMelds(gameState);
+
+    newGameButton.disabled = false;
+
+    console.log("New game started successfully!")
 })
 
 async function refreshGame() {

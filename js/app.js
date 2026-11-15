@@ -304,6 +304,37 @@ export async function fetchGameState() {
     }
 }
 
+export async function startNewGame() {
+
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}/api/games/${encodeURIComponent(gameCode)}/new`,
+            {
+                method: "POST",
+                headers: getGameHeaders()
+            }
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+
+            console.error("Backend response:", response.status, errorText);
+            
+            throw new Error("Could not start a new game.");
+        }
+
+        const gameState = await response.json();
+
+        console.log("New game started!");
+
+        return gameState;
+
+    } catch (error) {
+        console.error("Error starting new game:", error);
+        return null;
+    }
+}
+
 export async function drawCard() {
     try {
         const response = await fetch(`${API_BASE_URL}/api/games/${encodeURIComponent(gameCode)}/draw`, {
